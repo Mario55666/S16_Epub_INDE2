@@ -1,172 +1,214 @@
-# Planificador EPUB3 Interactivo — Simbolismo de Espacio
+# Planificador EPUB3 Interactivo - Simbolismo de Espacio
 
-> **Herramienta de planificacion visual** para organizar objetos interactivos en publicaciones EPUB3, basada en el contexto teorico del **Simbolismo de Espacio**.
+[![React](https://img.shields.io/badge/React-19-61DAFB?logo=react)](https://react.dev)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?logo=typescript)](https://www.typescriptlang.org)
+[![Vite](https://img.shields.io/badge/Vite-7-646CFF?logo=vite)](https://vitejs.dev)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.4-06B6D4?logo=tailwindcss)](https://tailwindcss.com)
+[![shadcn/ui](https://img.shields.io/badge/shadcn/ui-latest-000000)](https://ui.shadcn.com)
 
----
-
-## Contexto Academico
-
-- **Institucion:** IDC — Instituto de Diseno y Comunicacion
-- **Curso:** Infografia
-- **Docente:** Mg. Mario Quiroz Martinez
-- **Proyecto:** Infografia interactiva EPUB3 sobre el Simbolismo de Espacio
+> Mesa de trabajo visual para planificar objetos interactivos EPUB3 en Adobe InDesign.
+> Curso de Infografia - Mg. Mario Quiroz Martinez.
 
 ---
 
-## Descripcion
+## Demo en vivo
 
-Esta aplicacion web permite a los estudiantes **planificar, organizar y esquematizar** elementos interactivos (formularios, multimedia, animaciones, componentes UI) sobre una mesa de trabajo virtual con cuadricula en pixeles. La herramienta integra las 10 dimensiones del Simbolismo de Espacio como marco teorico para la toma de decisiones de diseno interactivo.
+**[https://tu-usuario.github.io/tu-repositorio/](https://tu-usuario.github.io/tu-repositorio/)**
 
-El objetivo es que el estudiante pueda, antes de abrir Adobe InDesign, tener una vision clara de:
-- Que elementos interactivos usara
-- Donde los posicionara en la pagina (en pixeles)
-- Como se insertan en InDesign paso a paso
-- Las formulas HTML, CSS y JavaScript que necesitara
-- El arco narrativo que seguira el lector
+*(Reemplaza `tu-usuario` y `tu-repositorio` con tus datos)*
 
 ---
 
-## Caracteristicas Principales
+## Que incluye
 
-### 1. Mesa de Trabajo con Cuadricula
-- Cuadricula de 50px con reglas de pixeles en bordes
-- Formatos de pagina: A4 (595x842 px), Carta (612x792 px), iPad (768x1024 px), Custom
-- Orientacion vertical y horizontal
-- Margenes de seguridad visualizados (8% estandar)
-- Area util calculada automaticamente
-
-### 2. Ficha de Contexto del Proyecto
-- Datos del estudiante (nombres, apellidos, email, codigo, seccion)
-- Tipo de trabajo: Individual o Equipo (con lista de integrantes)
-- Contexto Tematico, Espacial y Temporal
-- Titulo, descripcion y publico objetivo del proyecto
-
-### 3. Simbolismo de Espacio Integrado
-Las 10 dimensiones teoricas disponibles para seleccionar:
-- **Consciente:** Mistico, Exaltacion, Idealismo, Intelectualidad
-- **Umbral:** Limite emocional-espiritual
-- **Normal:** Sensibilidad emocional, Afectividad, Aspiraciones del alma, Voluntad, Receptividad sensorial
-
-Cada dimension incluye: descripcion, conexion emocional, recursos visuales y color asociado.
-
-### 4. Sistema de Capas (Layers)
-- Crear multiples capas con nombre y color propio
-- Mostrar/ocultar capas individualmente
-- Reordenar capas
-- Los objetos se colocan en la capa activa
-
-### 5. Interpretacion de Mapa Mental
-- Pegar un mapa mental en formato Markdown
-- La herramienta analiza el contenido y sugiere elementos interactivos
-- Boton para colocar automaticamente los elementos sugeridos en la mesa
-
-### 6. Generador de Prompt
-- Seleccionar dimensiones del simbolismo de espacio
-- Seleccionar etapas del arco narrativo
-- Genera un mapa mental en Markdown descargable
-
-### 7. Arco Narrativo
-8 etapas basadas en el simbolismo de espacio:
-1. Receptividad → 2. Sensibilidad → 3. Afectividad → 4. Intelectualidad → 5. Voluntad → 6. Idealismo → 7. Transformacion → 8. Trascendencia
-
-Cada etapa incluye: descripcion, enfoque visual y elementos interactivos recomendados.
-
-### 8. Inspector de Componentes
-Al hacer clic en un objeto colocado, muestra:
-- **Guia InDesign:** Paso a paso de como insertar el elemento en Adobe InDesign
-- **Formula HTML:** Codigo listo para copiar
-- **Formula CSS:** Estilos necesarios
-- **Formula JavaScript:** Logica de interactividad
-
-### 9. Informe Completo
-Boton "Informe" que genera un documento HTML imprimible (Ctrl+P → PDF) con:
-- Portada del proyecto
-- Datos del estudiante y tipo de trabajo
-- Contexto tematico, espacial y temporal
-- Dimensiones del simbolismo de espacio seleccionadas
-- Arco narrativo
-- Elementos interactivos planificados con posiciones en pixeles y capas
-- Checklist de implementacion EPUB3
-- Formulas HTML de todos los componentes
-
-### 10. 15 Componentes Interactivos
-
-**Formularios:** Campo de Texto, Email, Checkbox, Radio Button, Lista desplegable, Area de Texto, Boton Enviar
-**Multimedia:** Video HTML5, Audio Player
-**Navegacion:** Tabs/Pestanas, Acordeon
-**Contenido UI:** Tooltip/Info, Modal/Popup, Carrusel
-**Animacion:** Barra de Progreso, Card con Hover, Scroll Reveal
+| Modulo | Descripcion |
+|--------|-------------|
+| **17 Componentes Interactivos** | Campo de Texto, Email, Checkbox, Radio, Dropdown, Textarea, Boton, Video, Audio, Tabs, Acordeon, Tooltip, Modal, Carrusel, Barra de Progreso, Tarjeta Hover, Scroll Reveal |
+| **Efectos Avanzados** | Animaciones CSS3 con keyframes: pulse-glow, shake, shimmer, bounce-in, ripple, slide-down, confetti, 3D tilt, waveform, focus-trap |
+| **Mesa de Trabajo** | Canvas con reglas en px, cuadricula, margenes guia, arrastrar-y-soltar, seleccion multiple |
+| **Sistema de Capas** | Crear, renombrar, mostrar/ocultar capas con colores diferenciados |
+| **Formatos de Pagina** | A4, Carta, iPad y tamano personalizado editable - orientacion Vertical/Horizontal |
+| **Guia EPUB3** | 9 secciones: que es, estructura, InDesign, panel Botones, dimensiones, lectores compatibles, exportacion, EPUB3 vs PDF, componentes exclusivos |
+| **Ficha de Contexto** | Nombres/apellidos, individual/equipo, contexto tematico/espacial/temporal |
+| **Mapa Mental** | Interpretador de las 10 dimensiones del Simbolismo de Espacio |
+| **Arco Narrativo** | 8 etapas del arco narrativo aplicadas a publicaciones digitales |
+| **Generador de Prompts** | Prompts para IA optimizados para EPUB3 interactivo |
+| **Validador EPUB** | Validacion estructural de archivos .epub (d3magindesign) - contenedor OCF, paquete OPF, navegacion, integridad referencial |
+| **Exportar Codigo** | Genera HTML/CSS/JS de los componentes colocados en la mesa |
+| **Informe PDF** | Genera informe del proyecto con contexto, componentes usados y dimensiones |
 
 ---
 
-## Estructura del Proyecto
+## Stack Tecnologico
 
-```
-planificador-epub3/
-  src/
-    App.tsx                          # Componente principal
-    main.tsx                         # Punto de entrada
-    index.css                        # Estilos globales
-    components/
-      ComponentPalette.tsx           # Panel de componentes arrastrables
-      WorkbenchCanvas.tsx            # Mesa de trabajo central
-      InspectorPanel.tsx             # Inspector con guias y codigo
-      ExportPanel.tsx                # Exportar codigo XHTML/CSS/JS
-      GuidePanel.tsx                 # Guia completa de EPUB3 en InDesign
-      DimensionPanel.tsx             # Dimensiones y conversion de unidades
-      ProjectContextPanel.tsx        # Ficha de contexto del estudiante
-      LayersPanel.tsx                # Sistema de capas
-      MindMapInterpreter.tsx         # Interpretar mapa mental Markdown
-      PromptGenerator.tsx            # Generador de prompt en Markdown
-      NarrativeArc.tsx               # Visualizacion del arco narrativo
-      ReportPanel.tsx                # Generador de informe imprimible
-    data/
-      components.ts                  # Definicion de 15 componentes interactivos
-      projectContext.ts              # Contexto del proyecto, dimensiones, arco narrativo
-  dist/                              # Archivos compilados listos para desplegar
-  index.html
-  package.json
-  vite.config.ts
-  tailwind.config.js
-  tsconfig.json
+- **React 19** + TypeScript 5.9
+- **Vite 7** - Build tool ultrarapido
+- **Tailwind CSS 3.4** - Framework de utilidades
+- **shadcn/ui** - Componentes accesibles (40+ componentes)
+- **Lucide React** - Iconos vectoriales
+- **JSZip** - Validacion de archivos EPUB
+
+---
+
+## Instalacion local
+
+### Requisitos
+- Node.js 20+
+- npm o yarn
+
+### Pasos
+
+```bash
+# 1. Clonar o descargar el repositorio
+git clone https://github.com/tu-usuario/tu-repositorio.git
+cd tu-repositorio
+
+# 2. Instalar dependencias
+npm install
+
+# 3. Iniciar servidor de desarrollo
+npm run dev
+# Abre http://localhost:3000
+
+# 4. Compilar para produccion
+npm run build
 ```
 
 ---
 
-## Tecnologias Utilizadas
+## Como publicar en GitHub Pages
 
-- **React 19** + **TypeScript** — Framework y tipado
-- **Vite 7** — Build tool
-- **Tailwind CSS 3** — Estilos utilitarios
-- **shadcn/ui** — Componentes de UI (tabs, checkbox, textarea, etc.)
-- **Lucide React** — Iconos
+### Configuracion inicial (una sola vez)
+
+1. Crea un repositorio en GitHub
+2. Sube este proyecto (o usa este como template)
+3. Ve a **Settings > Pages** en tu repositorio
+4. En **Source**, selecciona:
+   - **Deploy from a branch**
+   - Branch: `main` (o `master`)
+   - Folder: `/docs`
+5. Guarda y espera 1-2 minutos
+
+### Actualizar despues de cambios
+
+```bash
+# Compilar
+npm run build
+
+# Copiar dist a docs (GitHub Pages lee de docs/)
+rm -rf docs
+cp -r dist docs
+
+# Subir cambios
+git add .
+git commit -m "Descripcion de los cambios"
+git push origin main
+```
+
+Espera 1-2 minutos y recarga tu pagina con **Ctrl + F5**.
 
 ---
 
-## Flujo de Trabajo del Estudiante
+## Estructura del proyecto
 
-1. **Rellenar la Ficha de Contexto** con datos personales y del proyecto
-2. **Seleccionar las dimensiones** del Simbolismo de Espacio que usara
-3. **Definir el formato** de la pagina (A4, Carta, iPad) y orientacion
-4. **Pegar su mapa mental** en Markdown para obtener sugerencias de elementos
-5. **Arrastrar componentes** a la mesa de trabajo y organizarlos
-6. **Usar capas** para separar elementos por secciones o etapas
-7. **Revisar el arco narrativo** para verificar el recorrido del lector
-8. **Hacer clic en cada elemento** para ver la guia de InDesign y las formulas
-9. **Generar el informe** para entregar la planificacion
-10. **Exportar el codigo** para insertarlo en el EPUB tras exportar desde InDesign
+```
+.
+├── docs/                       # GitHub Pages (carpeta de publicacion)
+│   ├── index.html
+│   └── assets/
+│       ├── index-*.js
+│       └── index-*.css
+├── src/
+│   ├── components/             # Componentes React
+│   │   ├── InteractiveMiniPreviews.tsx    # 17 mini previews con efectos
+│   │   ├── WorkbenchCanvas.tsx            # Mesa de trabajo drag-and-drop
+│   │   ├── ComponentPalette.tsx           # Panel de componentes
+│   │   ├── InspectorPanel.tsx             # Inspector de codigo
+│   │   ├── GuidePanel.tsx                 # Guia EPUB3 (9 secciones)
+│   │   ├── EpubValidator.tsx              # Validador EPUB integrado
+│   │   ├── LayersPanel.tsx                # Sistema de capas
+│   │   ├── ProjectContextPanel.tsx        # Ficha de contexto
+│   │   ├── NarrativeArc.tsx               # Arco narrativo
+│   │   ├── PromptGenerator.tsx            # Generador de prompts
+│   │   ├── MindMapInterpreter.tsx         # Mapa mental
+│   │   ├── ExportPanel.tsx                # Exportar codigo
+│   │   ├── ReportPanel.tsx                # Informe PDF
+│   │   ├── DimensionPanel.tsx             # Dimensiones
+│   │   └── mini-previews-effects.css      # Animaciones CSS3
+│   ├── data/
+│   │   ├── components.ts       # Definicion de 17 componentes
+│   │   └── projectContext.ts   # Contexto del proyecto
+│   ├── App.tsx                 # Componente principal
+│   ├── main.tsx                # Punto de entrada
+│   └── index.css               # Estilos globales
+├── index.html
+├── package.json
+├── vite.config.ts              # Configuracion Vite (base: './')
+├── tailwind.config.js
+├── tsconfig.json
+└── .gitignore
+```
 
 ---
 
-## Referencias Teoricas
+## Componentes interactivos con efectos
 
-- **Simbolismo de Espacio:** Dimensiones del espacio humano segun teoria de la percepcion espacial y simbolismo
-- **EPUB 3.0:** Especificacion W3C para publicaciones digitales — https://www.w3.org/publishing/epub3.html
-- **Adobe InDesign:** Panel Botones y Formularios para contenido interactivo
-- **Thorium Reader:** Lector EPUB3 de referencia con soporte completo de JavaScript y CSS
+| # | Componente | Efectos destacados |
+|---|-----------|-------------------|
+| 1 | Campo de Texto | Underline animado, glow pulsante |
+| 2 | Email | Validacion en tiempo real, shake en error, iconos SVG |
+| 3 | Checkbox | SVG stroke-draw animation, bounce elastico |
+| 4 | Radio Button | Pulso expansivo, dot con scale elastico |
+| 5 | Dropdown | Slide-down animation, highlight lateral |
+| 6 | Textarea | Barra de progreso del limite, glow en 100% |
+| 7 | Boton Enviar | Ripple effect, gradiente animado, confetti |
+| 8 | Video HTML5 | Waveform realista (16 barras), glow pulsante |
+| 9 | Audio Player | Visualizador de frecuencias (20 barras) |
+| 10 | Tabs | Indicador deslizante, fade-up en contenido |
+| 11 | Acordeon | Smooth height, rotacion icono 45 grados |
+| 12 | Modal | Backdrop blur, slide-up animation, focus trap |
+| 13 | Carrusel | Crossfade + scale, dots expansivos |
+| 14 | Barra de Progreso | Shimmer animation, celebracion con particulas |
+| 15 | Tooltip | Float-up animation, glow |
+| 16 | Tarjeta Hover | Efecto 3D tilt, shimmer diagonal |
+| 17 | Scroll Reveal | Stagger animation, blur-to-focus |
 
 ---
 
-## Autor
+## Validador EPUB
 
-Proyecto desarrollado como parte del curso de **Infografia** del **IDC — Instituto de Diseno y Comunicacion**, bajo la direccion del **Mg. Mario Quiroz Martinez**.
+Herramienta integrada (cortesia de **d3magindesign**) que valida:
+
+- **Contenedor OCF**: Firma ZIP, mimetype, container.xml
+- **Paquete OPF**: Version EPUB, metadatos, manifest, spine
+- **Navegacion**: Documento nav (EPUB 3) o NCX (EPUB 2)
+- **Integridad referencial**: Recursos del manifest, spine coherente, recursos huerfanos
+
+> **Nota**: Es un subset estructural. No sustituye a epubcheck oficial.
+
+---
+
+## Dimensiones del Simbolismo de Espacio
+
+1. Dimension Mistica
+2. Dimension de la Exaltacion
+3. Dimension del Idealismo
+4. Dimension de la Intelectualidad
+5. Dimension del Limite Emocional
+6. Dimension de la Sensibilidad
+7. Dimension de la Afectividad
+8. Dimension de las Aspiraciones
+9. Dimension de la Voluntad
+10. Dimension de la Receptividad
+
+---
+
+## Licencia
+
+Codigo generado para fines educativos. Uso libre para estudiantes del curso de Infografia.
+
+---
+
+**Desarrollado para**: Curso de Infografia  
+**Docente**: Mg. Mario Quiroz Martinez  
+**Institucion**: IDC - Infografia y Comunicacion
