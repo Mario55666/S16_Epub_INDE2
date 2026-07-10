@@ -1,0 +1,791 @@
+/* ============================================
+   EFECTOS AVANZADOS — Mini Previews EPUB3
+   17 componentes con animaciones CSS3
+   ============================================ */
+
+/* ---- KEYFRAMES GLOBALES ---- */
+
+@keyframes mp-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+@keyframes mp-pulse-glow {
+  0%, 100% { box-shadow: 0 0 4px rgba(59,130,246,0.3); }
+  50% { box-shadow: 0 0 12px rgba(59,130,246,0.6), 0 0 20px rgba(59,130,246,0.2); }
+}
+
+@keyframes mp-shake {
+  0%, 100% { transform: translateX(0); }
+  15% { transform: translateX(-4px); }
+  30% { transform: translateX(4px); }
+  45% { transform: translateX(-3px); }
+  60% { transform: translateX(3px); }
+  75% { transform: translateX(-1px); }
+}
+
+@keyframes mp-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes mp-bounce-in {
+  0% { transform: scale(0); opacity: 0; }
+  50% { transform: scale(1.2); }
+  70% { transform: scale(0.95); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes mp-check-draw {
+  0% { stroke-dashoffset: 20; }
+  100% { stroke-dashoffset: 0; }
+}
+
+@keyframes mp-ripple {
+  0% { transform: scale(0); opacity: 0.5; }
+  100% { transform: scale(2.5); opacity: 0; }
+}
+
+@keyframes mp-slide-down {
+  0% { opacity: 0; transform: translateY(-6px) scaleY(0.8); }
+  100% { opacity: 1; transform: translateY(0) scaleY(1); }
+}
+
+@keyframes mp-fade-up {
+  0% { opacity: 0; transform: translateY(8px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes mp-bar-dance {
+  0%, 100% { height: 20%; }
+  25% { height: 80%; }
+  50% { height: 40%; }
+  75% { height: 100%; }
+}
+
+@keyframes mp-confetti {
+  0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(-40px) rotate(360deg); opacity: 0; }
+}
+
+@keyframes mp-glow-success {
+  0% { box-shadow: 0 0 0 0 rgba(16,185,129,0.4); }
+  70% { box-shadow: 0 0 0 8px rgba(16,185,129,0); }
+  100% { box-shadow: 0 0 0 0 rgba(16,185,129,0); }
+}
+
+@keyframes mp-glow-error {
+  0% { box-shadow: 0 0 0 0 rgba(239,68,68,0.4); }
+  70% { box-shadow: 0 0 0 8px rgba(239,68,68,0); }
+  100% { box-shadow: 0 0 0 0 rgba(239,68,68,0); }
+
+}
+
+@keyframes mp-scale-pop {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+
+@keyframes mp-rotate-in {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(180deg); }
+}
+
+@keyframes mp-rotate-out {
+  0% { transform: rotate(180deg); }
+  100% { transform: rotate(0deg); }
+}
+
+@keyframes mp-spinner {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes mp-tilt {
+  0%, 100% { transform: perspective(500px) rotateX(0) rotateY(0); }
+  25% { transform: perspective(500px) rotateX(2deg) rotateY(-2deg); }
+  50% { transform: perspective(500px) rotateX(-1deg) rotateY(1deg); }
+  75% { transform: perspective(500px) rotateX(1deg) rotateY(-1deg); }
+}
+
+@keyframes mp-waveform {
+  0%, 100% { transform: scaleY(0.3); }
+  50% { transform: scaleY(1); }
+}
+
+/* ============================================
+   1. CAMPO DE TEXTO — Efectos avanzados
+   ============================================ */
+
+.mp-text-input-wrapper {
+  position: relative;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mp-text-input-wrapper:focus-within {
+  animation: mp-pulse-glow 2s ease-in-out infinite;
+}
+
+.mp-text-input-wrapper:focus-within .mp-input-label {
+  color: #60a5fa;
+  transform: translateY(0);
+  font-size: 7px;
+}
+
+.mp-text-input-wrapper .mp-input-underline {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #3b82f6, #06b6d4);
+  transition: all 0.3s ease;
+  border-radius: 1px;
+}
+
+.mp-text-input-wrapper:focus-within .mp-input-underline {
+  left: 0;
+  width: 100%;
+}
+
+.mp-text-input-wrapper .mp-input-field {
+  background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
+  border: 1.5px solid rgba(255,255,255,0.12);
+  transition: all 0.25s ease;
+}
+
+.mp-text-input-wrapper .mp-input-field:focus {
+  border-color: transparent;
+  background: linear-gradient(135deg, rgba(59,130,246,0.08), rgba(6,182,212,0.04));
+}
+
+/* ============================================
+   2. EMAIL — Validacion con efectos
+   ============================================ */
+
+.mp-email-wrapper.valid {
+  animation: mp-glow-success 1.5s ease;
+}
+
+.mp-email-wrapper.invalid {
+  animation: mp-shake 0.5s ease, mp-glow-error 1.5s ease;
+}
+
+.mp-email-wrapper.valid .mp-email-input {
+  border-color: #10b981 !important;
+  box-shadow: 0 0 0 1px rgba(16,185,129,0.3) !important;
+}
+
+.mp-email-wrapper.invalid .mp-email-input {
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 0 1px rgba(239,68,68,0.3) !important;
+}
+
+.mp-email-icon {
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform: scale(0);
+  opacity: 0;
+}
+
+.mp-email-wrapper.valid .mp-email-icon.check,
+.mp-email-wrapper.invalid .mp-email-icon.xmark {
+  transform: scale(1);
+  opacity: 1;
+}
+
+/* ============================================
+   3. CHECKBOX — Animacion SVG draw
+   ============================================ */
+
+.mp-checkbox-box {
+  position: relative;
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  border: 2px solid rgba(255,255,255,0.25);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.mp-checkbox-box:hover {
+  border-color: rgba(59,130,246,0.6);
+  box-shadow: 0 0 8px rgba(59,130,246,0.2);
+}
+
+.mp-checkbox-box.checked {
+  background: linear-gradient(135deg, #3b82f6, #06b6d4);
+  border-color: transparent;
+  animation: mp-scale-pop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 0 10px rgba(59,130,246,0.4);
+}
+
+.mp-checkbox-box .mp-check-svg {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mp-checkbox-box .mp-check-svg path {
+  stroke-dasharray: 20;
+  stroke-dashoffset: 20;
+  transition: stroke-dashoffset 0.3s ease;
+}
+
+.mp-checkbox-box.checked .mp-check-svg path {
+  stroke-dashoffset: 0;
+  animation: mp-check-draw 0.35s ease forwards;
+}
+
+/* ============================================
+   4. RADIO BUTTON — Pulso y glow
+   ============================================ */
+
+.mp-radio-circle {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.mp-radio-circle:hover {
+  border-color: rgba(59,130,246,0.5);
+}
+
+.mp-radio-circle.selected {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59,130,246,0.15);
+}
+
+.mp-radio-circle .mp-radio-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #3b82f6, #06b6d4);
+  transform: scale(0);
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.mp-radio-circle.selected .mp-radio-dot {
+  transform: scale(1);
+}
+
+/* ============================================
+   5. DROPDOWN — Animacion de apertura
+   ============================================ */
+
+.mp-dropdown-menu {
+  animation: mp-slide-down 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: top center;
+}
+
+.mp-dropdown-item {
+  transition: all 0.15s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.mp-dropdown-item::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 0;
+  background: linear-gradient(90deg, rgba(59,130,246,0.15), transparent);
+  transition: width 0.2s ease;
+}
+
+.mp-dropdown-item:hover::before {
+  width: 100%;
+}
+
+.mp-dropdown-trigger {
+  transition: all 0.2s ease;
+}
+
+.mp-dropdown-trigger:hover {
+  border-color: rgba(59,130,246,0.4);
+  box-shadow: 0 0 8px rgba(59,130,246,0.1);
+}
+
+.mp-dropdown-trigger.open {
+  border-color: rgba(59,130,246,0.5);
+  box-shadow: 0 0 12px rgba(59,130,246,0.15);
+}
+
+/* ============================================
+   6. TEXTAREA — Contador con progreso
+   ============================================ */
+
+.mp-textarea-wrapper {
+  position: relative;
+}
+
+.mp-textarea-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  border-radius: 0 0 0 4px;
+  transition: all 0.3s ease;
+}
+
+.mp-textarea-counter {
+  transition: all 0.2s ease;
+  font-variant-numeric: tabular-nums;
+}
+
+.mp-textarea-counter.warning {
+  color: #f59e0b;
+}
+
+.mp-textarea-counter.danger {
+  color: #ef4444;
+  animation: mp-pulse-glow 1.5s ease-in-out infinite;
+}
+
+/* ============================================
+   7. BOTON ENVIAR — Ripple + gradiente animado
+   ============================================ */
+
+.mp-submit-btn {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(90deg, #3b82f6, #06b6d4, #3b82f6);
+  background-size: 200% 100%;
+  transition: all 0.3s ease;
+}
+
+.mp-submit-btn:not(.success):hover {
+  background-position: 100% 0;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(59,130,246,0.3);
+}
+
+.mp-submit-btn:not(.success):active {
+  transform: translateY(0) scale(0.97);
+}
+
+.mp-submit-btn .mp-ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.4);
+  animation: mp-ripple 0.6s ease-out forwards;
+  pointer-events: none;
+}
+
+.mp-submit-btn.success {
+  background: linear-gradient(90deg, #10b981, #34d399) !important;
+  animation: mp-glow-success 1s ease;
+}
+
+.mp-submit-btn.success .mp-confetti-piece {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  animation: mp-confetti 0.8s ease-out forwards;
+}
+
+/* ============================================
+   8. VIDEO — Controles cinematicos
+   ============================================ */
+
+.mp-video-container {
+  position: relative;
+  overflow: hidden;
+  border-radius: 6px;
+}
+
+.mp-video-container::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(59,130,246,0.1), rgba(139,92,246,0.1));
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.mp-video-container.playing::before {
+  opacity: 1;
+}
+
+.mp-video-play-btn {
+  position: relative;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mp-video-play-btn:hover {
+  transform: scale(1.15);
+  box-shadow: 0 0 20px rgba(59,130,246,0.4);
+}
+
+.mp-video-play-btn::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 2px solid rgba(59,130,246,0.3);
+  animation: mp-pulse-glow 2s ease-in-out infinite;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.mp-video-container.playing .mp-video-play-btn::after {
+  opacity: 1;
+}
+
+.mp-video-waveform-bar {
+  transition: height 0.15s ease;
+  border-radius: 1px;
+}
+
+/* ============================================
+   9. AUDIO — Visualizador de frecuencias
+   ============================================ */
+
+.mp-audio-bar {
+  width: 3px;
+  background: linear-gradient(to top, #3b82f6, #06b6d4);
+  border-radius: 1.5px;
+  transition: height 0.15s ease;
+  flex-shrink: 0;
+}
+
+.mp-audio-play-btn {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.mp-audio-play-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 15px rgba(59,130,246,0.3);
+}
+
+.mp-audio-play-btn.playing {
+  background: linear-gradient(135deg, #3b82f6, #06b6d4) !important;
+  border-color: transparent !important;
+  box-shadow: 0 0 15px rgba(59,130,246,0.4);
+}
+
+/* ============================================
+   10. TABS — Indicador deslizante
+   ============================================ */
+
+.mp-tabs-list {
+  position: relative;
+  display: flex;
+  gap: 2px;
+}
+
+.mp-tab-indicator {
+  position: absolute;
+  bottom: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #3b82f6, #06b6d4);
+  border-radius: 1px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mp-tab-btn {
+  position: relative;
+  transition: all 0.2s ease;
+  z-index: 1;
+}
+
+.mp-tab-btn:hover {
+  color: rgba(255,255,255,0.8);
+  background: rgba(255,255,255,0.03);
+}
+
+.mp-tab-btn.active {
+  color: #60a5fa;
+}
+
+.mp-tab-panel {
+  animation: mp-fade-up 0.25s ease;
+}
+
+/* ============================================
+   11. ACORDEON — Smooth expand
+   ============================================ */
+
+.mp-accordion-item {
+  overflow: hidden;
+  transition: all 0.2s ease;
+}
+
+.mp-accordion-trigger {
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.mp-accordion-trigger:hover {
+  background: rgba(255,255,255,0.04);
+}
+
+.mp-accordion-trigger .mp-accordion-icon {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mp-accordion-trigger.open .mp-accordion-icon {
+  transform: rotate(45deg);
+}
+
+.mp-accordion-content {
+  overflow: hidden;
+  transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s ease, padding 0.25s ease;
+  max-height: 0;
+  opacity: 0;
+}
+
+.mp-accordion-content.open {
+  opacity: 1;
+}
+
+/* ============================================
+   12. MODAL — Backdrop blur + slide
+   ============================================ */
+
+.mp-modal-overlay {
+  animation: mp-fade-in 0.2s ease;
+}
+
+@keyframes mp-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.mp-modal-content {
+  animation: mp-modal-slide 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes mp-modal-slide {
+  from { opacity: 0; transform: translateY(15px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.mp-modal-backdrop {
+  backdrop-filter: blur(8px);
+  transition: backdrop-filter 0.3s ease;
+}
+
+/* ============================================
+   13. CARRUSEL — Transiciones suaves
+   ============================================ */
+
+.mp-carousel-slide {
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.mp-carousel-dot {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mp-carousel-dot.active {
+  width: 14px;
+  background: linear-gradient(90deg, #3b82f6, #06b6d4);
+}
+
+.mp-carousel-nav-btn {
+  transition: all 0.2s ease;
+  backdrop-filter: blur(4px);
+}
+
+.mp-carousel-nav-btn:hover {
+  background: rgba(0,0,0,0.5);
+  transform: translateY(-50%) scale(1.1);
+}
+
+/* ============================================
+   14. BARRA DE PROGRESO — Shimmer + glow
+   ============================================ */
+
+.mp-progress-track {
+  position: relative;
+  overflow: hidden;
+  background: rgba(255,255,255,0.08);
+  border-radius: 999px;
+}
+
+.mp-progress-fill {
+  position: relative;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #3b82f6, #06b6d4);
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+.mp-progress-fill::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+  background-size: 200% 100%;
+  animation: mp-shimmer 2s linear infinite;
+}
+
+.mp-progress-fill.complete {
+  background: linear-gradient(90deg, #10b981, #34d399) !important;
+  animation: mp-glow-success 1s ease;
+}
+
+.mp-progress-btn {
+  background: linear-gradient(135deg, rgba(59,130,246,0.15), rgba(6,182,212,0.1));
+  border: 1px solid rgba(59,130,246,0.25);
+  transition: all 0.25s ease;
+}
+
+.mp-progress-btn:hover {
+  background: linear-gradient(135deg, rgba(59,130,246,0.3), rgba(6,182,212,0.2));
+  border-color: rgba(59,130,246,0.5);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 10px rgba(59,130,246,0.2);
+}
+
+/* ============================================
+   15. TOOLTIP — Float + glow
+   ============================================ */
+
+.mp-tooltip-trigger {
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.mp-tooltip-trigger:hover {
+  color: #60a5fa;
+}
+
+.mp-tooltip-box {
+  animation: mp-tooltip-appear 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: bottom center;
+}
+
+@keyframes mp-tooltip-appear {
+  from { opacity: 0; transform: translateX(-50%) translateY(4px) scale(0.95); }
+  to { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+}
+
+.mp-tooltip-box::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: rgba(30, 41, 59, 0.95);
+}
+
+/* ============================================
+   16. TARJETA HOVER — 3D tilt + shimmer
+   ============================================ */
+
+.mp-hover-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-style: preserve-3d;
+  perspective: 500px;
+}
+
+.mp-hover-card:hover {
+  transform: translateY(-4px) rotateX(2deg);
+  box-shadow: 0 12px 30px rgba(59,130,246,0.15), 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.mp-hover-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent 40%,
+    rgba(255,255,255,0.03) 50%,
+    transparent 60%
+  );
+  transform: translateX(-100%);
+  transition: transform 0.6s ease;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.mp-hover-card:hover::before {
+  transform: translateX(100%);
+}
+
+.mp-hover-card-image {
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mp-hover-card:hover .mp-hover-card-image {
+  transform: scale(1.1);
+}
+
+.mp-hover-card-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(15,23,42,0.95) 0%, rgba(15,23,42,0.7) 50%, rgba(15,23,42,0.3) 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 8px;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mp-hover-card:hover .mp-hover-card-overlay {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ============================================
+   17. SCROLL REVEAL — Stagger reveal
+   ============================================ */
+
+.mp-reveal-item {
+  opacity: 0;
+  transform: translateY(12px);
+  filter: blur(2px);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mp-reveal-item.visible {
+  opacity: 1;
+  transform: translateY(0);
+  filter: blur(0);
+}
+
+.mp-reveal-item:nth-child(1) { transition-delay: 0ms; }
+.mp-reveal-item:nth-child(2) { transition-delay: 120ms; }
+.mp-reveal-item:nth-child(3) { transition-delay: 240ms; }
+
+.mp-reveal-btn {
+  background: linear-gradient(135deg, rgba(59,130,246,0.1), rgba(6,182,212,0.05));
+  border: 1px solid rgba(59,130,246,0.2);
+  transition: all 0.25s ease;
+}
+
+.mp-reveal-btn:hover {
+  background: linear-gradient(135deg, rgba(59,130,246,0.2), rgba(6,182,212,0.1));
+  border-color: rgba(59,130,246,0.4);
+  box-shadow: 0 0 15px rgba(59,130,246,0.15);
+}

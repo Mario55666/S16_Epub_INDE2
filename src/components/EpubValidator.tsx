@@ -1,0 +1,549 @@
+import { useEffect, useRef } from 'react';
+
+// Este componente inyecta el Validador EPUB completo de d3magindesign
+// como una aplicacion autocontenida dentro de un contenedor React.
+
+const EPUB_VALIDATOR_HTML = `<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<style>
+  :root{
+    --navy:#1B2A4A; --orange:#E8621A; --amber:#f3a100; --cream:#F5F0E8;
+    --ink:#141b2e; --paper:#fbf9f4; --line:#dcd4c4;
+    --ok:#1f7a4d; --warn:#b8860b; --err:#c0392b;
+    --ok-bg:#e7f4ec; --warn-bg:#fdf5e0; --err-bg:#fbeae7;
+    --mono:'DM Mono',ui-monospace,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;background:var(--cream);color:var(--ink);
+    font-family:'DM Sans',system-ui,sans-serif;line-height:1.55;font-size:16px;
+  }
+  .wrap{max-width:100%;margin:0;padding:20px}
+  header{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:6px}
+  h1{
+    font-family:'Syne',sans-serif;font-weight:800;letter-spacing:-.02em;
+    font-size:clamp(24px,5vw,36px);margin:0;color:var(--navy);line-height:1;
+  }
+  .brand{font-family:var(--mono);font-size:12px;color:var(--orange);letter-spacing:.08em;text-transform:uppercase}
+  .sub{color:#5a5140;max-width:62ch;margin:.5rem 0 0;font-size:14px}
+
+  .disclaimer{
+    margin-top:16px;border:1px solid var(--line);border-left:4px solid var(--amber);
+    background:var(--paper);padding:12px 14px;border-radius:8px;font-size:13px;
+  }
+  .disclaimer strong{color:var(--navy)}
+  .disclaimer code{font-family:var(--mono);font-size:12px;background:#efe9dc;padding:1px 5px;border-radius:4px}
+
+  .drop{
+    margin-top:20px;border:2px dashed var(--line);border-radius:14px;
+    background:var(--paper);padding:clamp(24px,5vw,40px) 20px;text-align:center;
+    cursor:pointer;transition:border-color .18s, background .18s;
+  }
+  .drop:hover,.drop:focus-visible{border-color:var(--orange);outline:none}
+  .drop.drag{border-color:var(--orange);background:#fff7ee}
+  .drop .big{font-family:'Syne',sans-serif;font-weight:600;font-size:18px;color:var(--navy)}
+  .drop .small{font-size:13px;color:#7a715e;margin-top:6px}
+  .drop svg{width:38px;height:38px;color:var(--orange);margin-bottom:8px}
+  input[type=file]{display:none}
+
+  .status{margin-top:18px;font-family:var(--mono);font-size:13px;color:var(--navy);display:none}
+  .status.on{display:block}
+
+  .summary{margin-top:20px;display:none;gap:8px;flex-wrap:wrap}
+  .summary.on{display:flex}
+  .pill{
+    font-family:var(--mono);font-size:12px;padding:6px 12px;border-radius:999px;
+    border:1px solid transparent;display:flex;align-items:center;gap:7px;font-weight:500;
+  }
+  .pill.ok{background:var(--ok-bg);color:var(--ok);border-color:#bfe0cc}
+  .pill.warn{background:var(--warn-bg);color:var(--warn);border-color:#ecd9a0}
+  .pill.err{background:var(--err-bg);color:var(--err);border-color:#eecac3}
+  .pill.info{background:#e9eef7;color:var(--navy);border-color:#cdd8ea}
+
+  .verdict{
+    margin-top:16px;display:none;padding:14px 16px;border-radius:12px;
+    font-family:'Syne',sans-serif;font-weight:600;font-size:16px;align-items:center;gap:12px;
+  }
+  .verdict.on{display:flex}
+  .verdict.pass{background:var(--ok-bg);color:var(--ok)}
+  .verdict.passwarn{background:var(--warn-bg);color:var(--warn)}
+  .verdict.fail{background:var(--err-bg);color:var(--err)}
+
+  .results{margin-top:16px}
+  .group{margin-top:14px}
+  .group h2{
+    font-family:'Syne',sans-serif;font-weight:600;font-size:13px;text-transform:uppercase;
+    letter-spacing:.09em;color:#8a7f68;margin:0 0 10px;border-bottom:1px solid var(--line);padding-bottom:6px;
+  }
+  .check{
+    display:flex;gap:12px;padding:10px 12px;border-radius:9px;background:var(--paper);
+    border:1px solid var(--line);margin-bottom:6px;align-items:flex-start;
+  }
+  .check .mk{flex:0 0 auto;width:18px;height:18px;margin-top:1px}
+  .check .body{flex:1;min-width:0}
+  .check .t{font-weight:600;color:var(--navy);font-size:13px}
+  .check .d{font-size:13px;color:#6b6350;margin-top:2px;word-break:break-word}
+  .check .d code{font-family:var(--mono);font-size:11px;background:#efe9dc;padding:1px 5px;border-radius:4px}
+  .check.ok .mk{color:var(--ok)} .check.warn .mk{color:var(--warn)} .check.err .mk{color:var(--err)}
+  .check.skip{opacity:.62} .check.skip .mk{color:#9a917d}
+
+  .meta{margin-top:16px;display:none;background:var(--paper);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  .meta.on{display:block}
+  .meta table{width:100%;border-collapse:collapse;font-size:13px}
+  .meta th,.meta td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+  .meta th{font-family:var(--mono);font-size:11px;color:#8a7f68;font-weight:500;width:34%;white-space:nowrap}
+  .meta td{font-family:var(--mono);font-size:12px;color:var(--navy);word-break:break-word}
+  .meta tr:last-child th,.meta tr:last-child td{border-bottom:none}
+
+  .actions{margin-top:18px;display:none;gap:10px;flex-wrap:wrap}
+  .actions.on{display:flex}
+  button.act{
+    font-family:'DM Sans',sans-serif;font-weight:600;font-size:13px;cursor:pointer;
+    border:1px solid var(--navy);background:var(--navy);color:#fff;padding:8px 14px;border-radius:9px;
+  }
+  button.act.ghost{background:transparent;color:var(--navy)}
+  button.act:hover{background:var(--orange);border-color:var(--orange);color:#fff}
+  button.act:focus-visible{outline:2px solid var(--orange);outline-offset:2px}
+
+  footer{margin-top:28px;font-size:11px;color:#9a917d;font-family:var(--mono)}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Validador EPUB</h1>
+    <span class="brand">d3magindesign</span>
+  </header>
+  <p class="sub">Verificacion estructural de archivos <code>.epub</code> en el navegador. Nada se sube a ningun servidor: el analisis ocurre localmente.</p>
+
+  <div class="disclaimer">
+    <strong>Alcance honesto.</strong> Esta herramienta valida la <em>estructura</em> del contenedor EPUB (empaquetado ZIP, <code>mimetype</code>, <code>container.xml</code>, OPF, spine/manifest, NCX/nav e integridad de referencias). <strong>No sustituye a epubcheck</strong>: no valida XHTML/CSS contra los esquemas oficiales, ni accesibilidad, fixed-layout, media overlays o cifrado de fuentes. Un EPUB que pasa aqui puede aun fallar la certificacion oficial.
+  </div>
+
+  <label class="drop" id="drop" tabindex="0" role="button" aria-label="Seleccionar o soltar un archivo EPUB">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+    <div class="big">Suelta un archivo EPUB aqui</div>
+    <div class="small">o haz clic para seleccionarlo · se procesa en tu equipo</div>
+    <input type="file" id="file" accept=".epub,application/epub+zip">
+  </label>
+
+  <div class="status" id="status"></div>
+  <div class="verdict" id="verdict"></div>
+  <div class="summary" id="summary"></div>
+
+  <div class="meta" id="meta"><table id="metaTable"></table></div>
+  <div class="results" id="results"></div>
+
+  <div class="actions" id="actions">
+    <button class="act" id="copyBtn">Copiar informe</button>
+    <button class="act ghost" id="resetBtn">Analizar otro</button>
+  </div>
+
+  <footer>Motor de descompresion: JSZip · Validacion: subset estructural OCF/OPF · Sin telemetria</footer>
+</div>
+</body>
+</html>`;
+
+export function EpubValidator() {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!containerRef.current) return;
+    const container = containerRef.current;
+    
+    // Crear iframe para aislar el validador
+    const iframe = document.createElement('iframe');
+    iframe.style.width = '100%';
+    iframe.style.height = '100%';
+    iframe.style.border = 'none';
+    iframe.style.display = 'block';
+    
+    container.innerHTML = '';
+    container.appendChild(iframe);
+
+    const doc = iframe.contentDocument || iframe.contentWindow?.document;
+    if (!doc) return;
+
+    doc.open();
+    doc.write(EPUB_VALIDATOR_HTML);
+    doc.close();
+
+    // Cargar fuentes de Google
+    const fontLink1 = doc.createElement('link');
+    fontLink1.rel = 'preconnect';
+    fontLink1.href = 'https://fonts.googleapis.com';
+    doc.head.appendChild(fontLink1);
+
+    const fontLink2 = doc.createElement('link');
+    fontLink2.rel = 'preconnect';
+    fontLink2.href = 'https://fonts.gstatic.com';
+    fontLink2.crossOrigin = 'anonymous';
+    doc.head.appendChild(fontLink2);
+
+    const fontLink3 = doc.createElement('link');
+    fontLink3.rel = 'stylesheet';
+    fontLink3.href = 'https://fonts.googleapis.com/css2?family=Syne:wght@600;800&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600&family=DM+Mono:wght@400;500&display=swap';
+    doc.head.appendChild(fontLink3);
+
+    // Cargar JSZip y luego el script de validacion
+    const jszipScript = doc.createElement('script');
+    jszipScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
+    jszipScript.onload = () => {
+      injectValidatorScript(doc);
+    };
+    doc.head.appendChild(jszipScript);
+
+    // Ajustar altura del iframe al contenido
+    const resizeObserver = new ResizeObserver(() => {
+      if (iframe.contentDocument?.body) {
+        iframe.style.height = iframe.contentDocument.body.scrollHeight + 40 + 'px';
+      }
+    });
+    
+    // Observar cuando el body esté disponible
+    const checkBody = setInterval(() => {
+      if (iframe.contentDocument?.body) {
+        resizeObserver.observe(iframe.contentDocument.body);
+        clearInterval(checkBody);
+      }
+    }, 100);
+
+    return () => {
+      clearInterval(checkBody);
+      resizeObserver.disconnect();
+    };
+  }, []);
+
+  return (
+    <div 
+      ref={containerRef} 
+      className="w-full h-full overflow-y-auto"
+      style={{ background: '#F5F0E8' }}
+    />
+  );
+}
+
+// ============================================================
+// SCRIPT DEL VALIDADOR (inyectado en el iframe)
+// =========================================================
+function injectValidatorScript(doc: Document) {
+  const script = doc.createElement('script');
+  script.textContent = `
+(function(){
+  "use strict";
+  const $ = s => document.querySelector(s);
+  const drop=$("#drop"), fileInput=$("#file"), statusEl=$("#status"),
+        verdictEl=$("#verdict"), summaryEl=$("#summary"), metaEl=$("#meta"),
+        metaTable=$("#metaTable"), resultsEl=$("#results"), actionsEl=$("#actions");
+
+  const ICON={
+    ok:'<svg class="mk" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>',
+    err:'<svg class="mk" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>',
+    warn:'<svg class="mk" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>',
+    skip:'<svg class="mk" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>'
+  };
+
+  let report=[];
+  const GROUPS=["Contenedor OCF","Paquete OPF","Navegacion","Integridad referencial"];
+
+  function reset(){
+    report=[];
+    verdictEl.className="verdict"; verdictEl.textContent="";
+    summaryEl.className="summary"; summaryEl.innerHTML="";
+    metaEl.className="meta"; metaTable.innerHTML="";
+    resultsEl.innerHTML=""; actionsEl.className="actions";
+    statusEl.className="status"; statusEl.textContent="";
+  }
+  function status(t){ statusEl.textContent=t; statusEl.className="status on"; }
+  function add(group,level,title,detail){ report.push({group,level,title,detail:detail||""}); }
+
+  drop.addEventListener("click",()=>fileInput.click());
+  drop.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){e.preventDefault();fileInput.click();} });
+  ["dragenter","dragover"].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.add("drag");}));
+  ["dragleave","drop"].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.remove("drag");}));
+  drop.addEventListener("drop",e=>{ const f=e.dataTransfer.files[0]; if(f) handle(f); });
+  fileInput.addEventListener("change",e=>{ const f=e.target.files[0]; if(f) handle(f); });
+  $("#resetBtn").addEventListener("click",()=>{ reset(); fileInput.value=""; });
+  $("#copyBtn").addEventListener("click",copyReport);
+
+  async function handle(file){
+    reset();
+    if(!/\\.epub$/i.test(file.name)){
+      status("⚠ El archivo no tiene extension .epub — se intentara leer igualmente.");
+    }
+    status("Leyendo "+file.name+" ("+fmtBytes(file.size)+")...");
+    let buf;
+    try{ buf=await file.arrayBuffer(); }
+    catch(err){ status("✗ No se pudo leer el archivo: "+err.message); return; }
+    await validate(buf, file);
+  }
+
+  async function validate(buf, file){
+    const bytes=new Uint8Array(buf);
+    checkRawMimetype(bytes);
+
+    status("Descomprimiendo...");
+    let zip;
+    try{ zip=await JSZip.loadAsync(buf); }
+    catch(err){
+      add("Contenedor OCF","err","No es un ZIP valido","JSZip no pudo abrir el archivo: "+err.message+". Un EPUB es un ZIP; si esto falla, el archivo esta corrupto o no es un EPUB.");
+      return render(file,null);
+    }
+    add("Contenedor OCF","ok","Archivo ZIP descomprimible","El contenedor se abrio correctamente.");
+
+    const names=Object.keys(zip.files).filter(n=>!zip.files[n].dir);
+    add("Contenedor OCF","ok","Entradas encontradas", names.length+" archivo(s) dentro del contenedor.");
+
+    const mt=zip.file("mimetype");
+    if(!mt){
+      add("Contenedor OCF","err","Falta <code>mimetype</code>","El OCF exige un archivo llamado exactamente <code>mimetype</code> en la raiz.");
+    } else {
+      const val=(await mt.async("string")).replace(/[\\r\\n]+$/,"");
+      if(val==="application/epub+zip"){
+        add("Contenedor OCF","ok","<code>mimetype</code> correcto","Contenido: <code>application/epub+zip</code>.");
+      } else {
+        add("Contenedor OCF","err","<code>mimetype</code> con contenido invalido","Se esperaba <code>application/epub+zip</code>, se encontro: <code>"+esc(val.slice(0,60))+"</code>.");
+      }
+    }
+
+    const containerFile=zip.file("META-INF/container.xml");
+    let opfPath=null;
+    if(!containerFile){
+      add("Contenedor OCF","err","Falta <code>META-INF/container.xml</code>","Sin este archivo el lector no sabe donde esta el paquete OPF.");
+    } else {
+      add("Contenedor OCF","ok","<code>META-INF/container.xml</code> presente","");
+      const xml=await containerFile.async("string");
+      const doc=parseXML(xml,"container.xml");
+      if(doc){
+        const rootfile=doc.querySelector("rootfile");
+        opfPath=rootfile && rootfile.getAttribute("full-path");
+        if(opfPath){
+          add("Contenedor OCF","ok","Ruta del OPF declarada","<code>"+esc(opfPath)+"</code>");
+        } else {
+          add("Contenedor OCF","err","<code>container.xml</code> sin <code>full-path</code>","No declara la ruta del documento de paquete (OPF).");
+        }
+      } else {
+        add("Contenedor OCF","err","<code>container.xml</code> no es XML valido","No se pudo parsear.");
+      }
+    }
+
+    let opfDoc=null, opfDir="", version=null;
+    if(opfPath){
+      const opfFile=zip.file(opfPath);
+      if(!opfFile){
+        add("Paquete OPF","err","OPF no encontrado","<code>container.xml</code> apunta a <code>"+esc(opfPath)+"</code> pero ese archivo no existe en el contenedor.");
+      } else {
+        opfDir=opfPath.includes("/")?opfPath.replace(/[^/]+$/,""):"";
+        const opfXml=await opfFile.async("string");
+        opfDoc=parseXML(opfXml,"OPF");
+        if(!opfDoc){
+          add("Paquete OPF","err","OPF no es XML valido","No se pudo parsear el documento de paquete.");
+        } else {
+          const pkg=opfDoc.querySelector("package");
+          version=pkg && pkg.getAttribute("version");
+          if(version){ add("Paquete OPF","ok","Version EPUB detectada","<code>"+esc(version)+"</code>"); }
+          else { add("Paquete OPF","warn","Sin atributo <code>version</code>","El elemento <code>&lt;package&gt;</code> no declara version."); }
+
+          const meta=opfDoc.querySelector("metadata");
+          if(!meta){ add("Paquete OPF","err","Falta <code>&lt;metadata&gt;</code>",""); }
+          else{
+            checkDC(meta,"title","titulo (dc:title)");
+            checkDC(meta,"identifier","identificador (dc:identifier)");
+            checkDC(meta,"language","idioma (dc:language)");
+          }
+          if(!opfDoc.querySelector("manifest")) add("Paquete OPF","err","Falta <code>&lt;manifest&gt;</code>","");
+          if(!opfDoc.querySelector("spine")) add("Paquete OPF","err","Falta <code>&lt;spine&gt;</code>","");
+        }
+      }
+    }
+
+    if(opfDoc){
+      integrityChecks(opfDoc, zip, names, opfDir, version);
+    }
+
+    function checkDC(meta,tag,label){
+      const found=[...meta.getElementsByTagName("*")].some(el=>{
+        const ln=el.localName||el.nodeName.split(":").pop();
+        return ln===tag;
+      });
+      if(found) add("Paquete OPF","ok","Metadato: "+label,"");
+      else add("Paquete OPF","err","Falta metadato: "+label,"Requerido por el estandar.");
+    }
+
+    render(file, opfDoc, version);
+  }
+
+  function integrityChecks(opfDoc, zip, names, opfDir, version){
+    const manifestItems={};
+    const hrefSet=new Set();
+    opfDoc.querySelectorAll("manifest > item").forEach(it=>{
+      const id=it.getAttribute("id"), href=it.getAttribute("href");
+      manifestItems[id]={href, mediaType:it.getAttribute("media-type"), props:it.getAttribute("properties")||""};
+      if(href) hrefSet.add(href);
+    });
+
+    let missing=[];
+    Object.values(manifestItems).forEach(m=>{
+      if(!m.href) return;
+      const full=normalize(opfDir+m.href);
+      if(!names.includes(full)) missing.push(m.href);
+    });
+    if(missing.length===0){
+      add("Integridad referencial","ok","Todos los recursos del manifest existen",Object.keys(manifestItems).length+" item(s) declarados, todos presentes en el ZIP.");
+    } else {
+      add("Integridad referencial","err","Recursos declarados pero ausentes",missing.length+" href del manifest no existen en el contenedor: <code>"+esc(missing.slice(0,6).join(", "))+(missing.length>6?"...":"")+"</code>");
+    }
+
+    const spineRefs=[...opfDoc.querySelectorAll("spine > itemref")].map(r=>r.getAttribute("idref"));
+    const badSpine=spineRefs.filter(id=>!manifestItems[id]);
+    if(spineRefs.length===0){
+      add("Paquete OPF","err","Spine vacio","No hay <code>&lt;itemref&gt;</code>; el libro no tiene orden de lectura.");
+    } else if(badSpine.length===0){
+      add("Integridad referencial","ok","Spine coherente con manifest",spineRefs.length+" entrada(s) de lectura, todas resueltas.");
+    } else {
+      add("Integridad referencial","err","Spine apunta a ids inexistentes","<code>"+esc(badSpine.join(", "))+"</code> no estan en el manifest.");
+    }
+
+    const skip=new Set(["mimetype","META-INF/container.xml"]);
+    const manifestFull=new Set(Object.values(manifestItems).filter(m=>m.href).map(m=>normalize(opfDir+m.href)));
+    const orphans=names.filter(n=>!skip.has(n) && !n.startsWith("META-INF/") && !manifestFull.has(n) && !isOpf(n));
+    if(orphans.length>0){
+      add("Integridad referencial","warn","Recursos no declarados en el manifest",orphans.length+" archivo(s) presentes pero no listados: <code>"+esc(orphans.slice(0,6).join(", "))+(orphans.length>6?"...":"")+"</code>. epubcheck los marca como error.");
+    } else {
+      add("Integridad referencial","ok","Sin recursos huerfanos","Todo archivo de contenido esta declarado en el manifest.");
+    }
+
+    const isV3=(version||"").startsWith("3");
+    if(isV3){
+      const nav=Object.values(manifestItems).find(m=>/(^|\\s)nav(\\s|$)/.test(m.props));
+      if(nav) add("Navegacion","ok","Documento de navegacion EPUB 3 presente","Item con <code>properties=\\"nav\\"</code>: <code>"+esc(nav.href)+"</code>");
+      else add("Navegacion","err","Falta documento de navegacion","EPUB 3 requiere un item del manifest con <code>properties=\\"nav\\"</code>.");
+    } else {
+      const spine=opfDoc.querySelector("spine");
+      const tocId=spine && spine.getAttribute("toc");
+      if(tocId && manifestItems[tocId]){
+        add("Navegacion","ok","NCX referenciado (EPUB 2)","<code>"+esc(manifestItems[tocId].href)+"</code>");
+      } else {
+        const ncx=Object.values(manifestItems).find(m=>m.mediaType==="application/x-dtbncx+xml");
+        if(ncx) add("Navegacion","warn","NCX presente pero no referenciado en spine","<code>spine@toc</code> no apunta al NCX.");
+        else add("Navegacion","warn","Sin NCX detectado","EPUB 2 normalmente incluye un archivo <code>.ncx</code>.");
+      }
+    }
+  }
+
+  function isOpf(name){ return name.endsWith(".opf"); }
+
+  function checkRawMimetype(bytes){
+    if(bytes[0]!==0x50||bytes[1]!==0x4B||bytes[2]!==0x03||bytes[3]!==0x04){
+      add("Contenedor OCF","err","Firma ZIP ausente","Los primeros bytes no son <code>PK\\x03\\x04</code>; el archivo no es un ZIP.");
+      return;
+    }
+    const fnLen=bytes[26]|(bytes[27]<<8);
+    const extraLen=bytes[28]|(bytes[29]<<8);
+    const method=bytes[8]|(bytes[9]<<8);
+    const name=new TextDecoder().decode(bytes.slice(30,30+fnLen));
+    if(name!=="mimetype"){
+      add("Contenedor OCF","err","Primer entry no es <code>mimetype</code>","El OCF exige que <code>mimetype</code> sea el primer archivo del ZIP; se encontro <code>"+esc(name)+"</code>.");
+      return;
+    }
+    add("Contenedor OCF","ok","<code>mimetype</code> es el primer entry","");
+    if(method!==0){
+      add("Contenedor OCF","err","<code>mimetype</code> esta comprimido","Debe almacenarse sin comprimir (metodo STORED/0); se uso metodo "+method+".");
+    } else {
+      add("Contenedor OCF","ok","<code>mimetype</code> sin comprimir","Almacenado como STORED, segun el estandar.");
+    }
+    if(extraLen!==0){
+      add("Contenedor OCF","warn","<code>mimetype</code> con extra field","El estandar recomienda sin campos extra; puede rechazarlo un validador estricto.");
+    }
+  }
+
+  function render(file, opfDoc, version){
+    statusEl.className="status";
+    const counts={ok:0,warn:0,err:0};
+    report.forEach(r=>{ if(counts[r.level]!==undefined) counts[r.level]++; });
+
+    let vClass,vText;
+    if(counts.err>0){ vClass="fail"; vText="No valido — "+counts.err+" error(es) estructural(es)"; }
+    else if(counts.warn>0){ vClass="passwarn"; vText="Estructura valida con "+counts.warn+" advertencia(s)"; }
+    else { vClass="pass"; vText="Estructura valida (subset)"; }
+    verdictEl.className="verdict on "+vClass;
+    verdictEl.innerHTML=(counts.err>0?ICON.err:counts.warn>0?ICON.warn:ICON.ok).replace('class="mk"','style="width:24px;height:24px;flex:0 0 auto"')+"<span>"+vText+"</span>";
+
+    summaryEl.className="summary on";
+    summaryEl.innerHTML=
+      pill("info",file.name)+
+      pill("ok",counts.ok+" correcto")+
+      (counts.warn?pill("warn",counts.warn+" advertencia"):"")+
+      (counts.err?pill("err",counts.err+" error"):"")
+    ;
+
+    if(opfDoc){
+      const rows=[];
+      const g=(t)=>{ const el=[...opfDoc.getElementsByTagName("*")].find(e=>(e.localName||e.nodeName.split(":").pop())===t); return el?el.textContent.trim():"—"; };
+      rows.push(["Version",version||"—"]);
+      rows.push(["Titulo",g("title")]);
+      rows.push(["Idioma",g("language")]);
+      rows.push(["Identificador",g("identifier")]);
+      rows.push(["Autor(es)",g("creator")]);
+      rows.push(["Editorial",g("publisher")]);
+      metaTable.innerHTML=rows.map(([k,v])=>"<tr><th>"+k+"</th><td>"+esc(v||"—")+"</td></tr>").join("");
+      metaEl.className="meta on";
+    }
+
+    resultsEl.innerHTML="";
+    GROUPS.forEach(gr=>{
+      const items=report.filter(r=>r.group===gr);
+      if(!items.length) return;
+      const div=document.createElement("div"); div.className="group";
+      div.innerHTML="<h2>"+gr+"</h2>"+items.map(it=>
+        '<div class="check '+it.level+'">'+ICON[it.level]+'<div class="body"><div class="t">'+it.title+'</div>'+(it.detail?'<div class="d">'+it.detail+'</div>':'')+'</div></div>'
+      ).join("");
+      resultsEl.appendChild(div);
+    });
+
+    actionsEl.className="actions on";
+
+    // Notificar a parent para resize
+    if(window.parent !== window){
+      setTimeout(()=>{
+        window.parent.postMessage({type:'epub-validator-resize',height:document.body.scrollHeight+40},'*');
+      },100);
+    }
+  }
+
+  function pill(cls,txt){ return '<span class="pill '+cls+'">'+esc(txt)+'</span>'; }
+
+  function copyReport(){
+    const lines=["Validador EPUB — d3magindesign","="+"=".repeat(40)];
+    let cur="";
+    report.forEach(r=>{
+      if(r.group!==cur){ cur=r.group; lines.push("","["+cur+"]"); }
+      const m={ok:"OK ",warn:"! ",err:"X "}[r.level]||"- ";
+      lines.push(m+strip(r.title)+(r.detail?" — "+strip(r.detail):""));
+    });
+    lines.push("","Nota: validacion estructural (subset). No sustituye a epubcheck.");
+    navigator.clipboard.writeText(lines.join("\\n")).then(()=>{
+      const b=$("#copyBtn"), o=b.textContent; b.textContent="Copiado ✓";
+      setTimeout(()=>b.textContent=o,1600);
+    });
+  }
+
+  function parseXML(str,label){
+    try{
+      const doc=new DOMParser().parseFromString(str,"application/xml");
+      if(doc.querySelector("parsererror")) return null;
+      return doc;
+    }catch(e){ return null; }
+  }
+  function normalize(p){ const parts=[]; p.split("/").forEach(s=>{ if(s===".."){parts.pop();} else if(s!=="."&&s!==""){parts.push(s);} }); return parts.join("/"); }
+  function esc(s){ return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+  function strip(s){ return String(s).replace(/<[^>]+>/g,"").replace(/&lt;/g,"<").replace(/&gt;/g,">").replace(/&amp;/g,"&"); }
+  function fmtBytes(n){ if(n<1024)return n+" B"; if(n<1048576)return (n/1024).toFixed(1)+" KB"; return (n/1048576).toFixed(2)+" MB"; }
+})();
+  `;
+  doc.head.appendChild(script);
+}
