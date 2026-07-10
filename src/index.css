@@ -1,0 +1,91 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 220 15% 8%;
+    --foreground: 0 0% 95%;
+    --card: 220 15% 11%;
+    --card-foreground: 0 0% 95%;
+    --popover: 220 15% 11%;
+    --popover-foreground: 0 0% 95%;
+    --primary: 25 95% 53%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 220 15% 16%;
+    --secondary-foreground: 0 0% 95%;
+    --muted: 220 15% 16%;
+    --muted-foreground: 0 0% 55%;
+    --accent: 220 15% 16%;
+    --accent-foreground: 0 0% 95%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 220 15% 20%;
+    --input: 220 15% 20%;
+    --ring: 25 95% 53%;
+    --radius: 0.5rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    overflow: hidden;
+  }
+}
+
+@layer utilities {
+  .workspace-grid {
+    background-image: 
+      linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size: 20px 20px;
+  }
+  .component-pill {
+    @apply flex items-center gap-2 px-3 py-2 rounded-lg bg-secondary/80 
+           border border-border hover:border-primary/60 hover:bg-secondary 
+           cursor-grab active:cursor-grabbing transition-all text-sm;
+  }
+  .component-pill.dragging {
+    @apply opacity-50 border-primary;
+  }
+  .dropped-item {
+    @apply absolute p-3 rounded-lg border-2 border-dashed border-primary/40 
+           bg-primary/5 hover:border-primary hover:bg-primary/10 
+           cursor-pointer transition-all;
+  }
+  .dropped-item.selected {
+    @apply border-solid border-primary bg-primary/15 shadow-lg shadow-primary/10;
+  }
+  .code-block {
+    @apply bg-black/60 rounded-lg p-3 font-mono text-xs overflow-x-auto 
+           border border-white/10 text-orange-100/90 leading-relaxed;
+  }
+  .step-item {
+    @apply flex gap-3 items-start p-3 rounded-lg bg-white/[0.03] 
+           border border-white/5 mb-2;
+  }
+  .step-number {
+    @apply w-6 h-6 rounded-full bg-primary/20 text-primary 
+           flex items-center justify-center text-xs font-bold flex-shrink-0;
+  }
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--border));
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground));
+}
